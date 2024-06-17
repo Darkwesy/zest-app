@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId      String   @unique @default(uuid()) @map("user_id")
+  email       String   @unique
+  displayName String   @map("display_name")
+  password    String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  checkIns        CheckIn[]
+  userEvents      UserEvent[]
+  organizedEvents Event[]     @relation("OrganizedEvents")
+
+  @@map("user")
+}
+
+model Event {
+  eventId     Int      @unique @default(autoincrement()) @map("event_id")
+  title       String
+  date        DateTime
+  slug        String   @unique
+  details     String?
+  active      Boolean  @default(true)
+  organizerId String   @map("organizer_id")
+
+  checkIns   CheckIn[]
+  userEvents UserEvent[]
+  organizer  User        @relation("OrganizedEvents", fields: [organizerId], references: [userId])
+
+  @@map("event")
+}
+
+model CheckIn {
+  id        Int      @unique @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    String   @map("user_id")
+  eventId   Int      @map("event_id")
+
+  user  User  @relation(fields: [userId], references: [userId])
+  event Event @relation(fields: [eventId], references: [eventId])
+
+  @@unique([userId, eventId])
+  @@map("check_in")
+}
+
+model UserEvent {
+  userEventId Int    @unique @default(autoincrement()) @map("user_event_id")
+  userId      String @map("user_id")
+  eventId     Int    @map("event_id")
+
+  user  User  @relation(fields: [userId], references: [userId])
+  event Event @relation(fields: [eventId], references: [eventId])
+
+  @@unique([userId, eventId])
+  @@map("user_event")
+}
