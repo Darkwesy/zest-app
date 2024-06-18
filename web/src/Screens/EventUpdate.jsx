@@ -1,4 +1,3 @@
-// Tela de Update
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { EventCard } from '@/components/component/event-card';
@@ -45,7 +44,7 @@ export const EventUpdateScreen = () => {
 
   const handleDeleteEvent = async (eventId) => {
     try {
-      await axios.delete(`${apiURL}/events/${eventId}/delete`, {
+      await axios.delete(`${apiURL}/events/${eventId}/inactive`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -98,6 +97,10 @@ export const EventUpdateScreen = () => {
                 title={event.title}
                 date={event.date}
                 details={event.details}
+                description={event.details}
+                location={event.location}
+                maxParticipants={event.maxParticipants}
+                category={event.category.name}
                 buttonText={'Atualizar Evento'}
                 onClick={() => handleSelectEvent(event)}
                 onDelete={() => handleDeleteEvent(event.eventId)}

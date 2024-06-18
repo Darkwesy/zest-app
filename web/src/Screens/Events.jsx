@@ -38,7 +38,11 @@ export const EventsScreen = () => {
                 date={event.date}
                 details={event.details}
                 description={event.details}
-                buttonText={'Check-in'}
+                location={event.location}
+                eventLink={event.eventLink}
+                maxParticipants={event.maxParticipants}
+                category={event.category.name}
+                buttonText={'Acessar Evento'}
               />
             </div>
           ))}
