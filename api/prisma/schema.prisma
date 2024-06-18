@@ -16,50 +16,32 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  checkIns        CheckIn[]
-  userEvents      UserEvent[]
-  organizedEvents Event[]     @relation("OrganizedEvents")
-
   @@map("user")
 }
 
 model Event {
-  eventId     Int      @unique @default(autoincrement()) @map("event_id")
-  title       String
-  date        DateTime
-  slug        String   @unique
-  details     String?
-  active      Boolean  @default(true)
-  organizerId String   @map("organizer_id")
+  eventId         Int      @unique @default(autoincrement()) @map("event_id")
+  title           String
+  date            DateTime
+  slug            String   @unique
+  details         String?  @db.LongText
+  location        String?
+  maxParticipants Int?
+  active          Boolean  @default(true)
+  organizerEmail  String   @map("organizer_email")
+  eventLink       String   @map("event_link")
+  categoryId      Int      @map("category_id")
 
-  checkIns   CheckIn[]
-  userEvents UserEvent[]
-  organizer  User        @relation("OrganizedEvents", fields: [organizerId], references: [userId])
+  category Category @relation(fields: [categoryId], references: [categoryId])
 
   @@map("event")
 }
 
-model CheckIn {
-  id        Int      @unique @default(autoincrement())
-  createdAt DateTime @default(now())
-  userId    String   @map("user_id")
-  eventId   Int      @map("event_id")
+model Category {
+  categoryId Int    @unique @default(autoincrement()) @map("category_id")
+  name       String @unique
 
-  user  User  @relation(fields: [userId], references: [userId])
-  event Event @relation(fields: [eventId], references: [eventId])
+  events Event[]
 
-  @@unique([userId, eventId])
-  @@map("check_in")
-}
-
-model UserEvent {
-  userEventId Int    @unique @default(autoincrement()) @map("user_event_id")
-  userId      String @map("user_id")
-  eventId     Int    @map("event_id")
-
-  user  User  @relation(fields: [userId], references: [userId])
-  event Event @relation(fields: [eventId], references: [eventId])
-
-  @@unique([userId, eventId])
-  @@map("user_event")
+  @@map("category")
 }

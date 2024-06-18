@@ -6,7 +6,7 @@ import { eventRouter } from './router/eventsRoutes.js';
 
 export const app = Express();
 
-app.use(cors({ origin: 'http://192.168.0.100:5173' }));
+app.use(cors());
 app.use(morgan('dev'));
 app.use(Express.json());
 app.use(urlencoded({ extended: true }));
